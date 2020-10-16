@@ -9,7 +9,7 @@ import {
   SliderThumb,
   SliderTrack,
   Stack,
-  ThemeProvider
+  ChakraProvider,
 } from "@chakra-ui/core";
 import Sketch from "react-p5";
 import IP5 from "p5";
@@ -22,7 +22,7 @@ import "./styles.css";
 
 const DEFAULT_STATE = {
   strokeWidth: Number(localStorage.getItem("strokeWidth") || 2),
-  symmetry: Number(localStorage.getItem("symmetry") || 12)
+  symmetry: Number(localStorage.getItem("symmetry") || 12),
 };
 
 const Controls: React.FC<{
@@ -77,7 +77,7 @@ const Controls: React.FC<{
             >
               <SliderTrack bg="red.100" />
               <SliderFilledTrack bg="tomato" />
-              <SliderThumb size={6}>
+              <SliderThumb boxSize={6}>
                 <Box color="tomato" as={MdGraphicEq} />
               </SliderThumb>
             </Slider>
@@ -99,7 +99,7 @@ const Controls: React.FC<{
             >
               <SliderTrack />
               <SliderFilledTrack />
-              <SliderThumb size={6}>
+              <SliderThumb boxSize={6}>
                 <Box color="blue.500" as={MdGraphicEq} />
               </SliderThumb>
             </Slider>
@@ -113,7 +113,7 @@ const Controls: React.FC<{
             height={10}
             width={10}
             padding={0}
-            variantColor="green"
+            color="green"
             onClick={props.onSave}
           >
             <FaSave fontSize="1.2rem" />
@@ -123,7 +123,7 @@ const Controls: React.FC<{
             height={10}
             width={10}
             padding={0}
-            variantColor="blue"
+            color="blue"
             onClick={props.onReset}
           >
             <VscDebugRestart fontSize="1.25rem" />
@@ -235,9 +235,9 @@ class App extends Component {
 const rootElement = document.getElementById("root");
 
 render(
-  <ThemeProvider>
+  <ChakraProvider>
     <CSSReset />
     <App />
-  </ThemeProvider>,
+  </ChakraProvider>,
   rootElement
 );

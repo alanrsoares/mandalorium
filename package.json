@@ -5,9 +5,7 @@
   "keywords": [],
   "main": "src/index.tsx",
   "dependencies": {
-    "@chakra-ui/core": "0.8.0",
-    "@emotion/core": "10.0.35",
-    "@emotion/styled": "10.0.27",
+    "@chakra-ui/core": "^1.0.0-rc.5",
     "@types/react": "16.9.52",
     "emotion-theming": "10.0.27",
     "p5": "1.1.9",
