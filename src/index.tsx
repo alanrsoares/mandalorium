@@ -1,17 +1,21 @@
-import React, { ChangeEvent, Component, useState } from "react";
+import React, { Component, useRef, useState } from "react";
 import { render } from "react-dom";
 import {
   Box,
   Button,
   CSSReset,
-  Input,
+  Slider,
+  SliderFilledTrack,
+  SliderThumb,
+  SliderTrack,
   Stack,
-  ThemeProvider,
-  useDisclosure
+  ThemeProvider
 } from "@chakra-ui/core";
 import Sketch from "react-p5";
 import IP5 from "p5";
-import { FaCog } from "react-icons/fa";
+import { FaCog, FaSave } from "react-icons/fa";
+import { VscChromeClose, VscDebugRestart } from "react-icons/vsc";
+import { MdGraphicEq } from "react-icons/md";
 
 import { getRainbowHSL } from "./colors";
 import "./styles.css";
@@ -28,7 +32,7 @@ const Controls: React.FC<{
   onReset(): void;
   onSave(): void;
 }> = (props) => {
-  const { isOpen, onToggle } = useDisclosure();
+  const [isOpen, setIsOpen] = useState(false);
   const [state, setState] = useState(DEFAULT_STATE);
 
   return (
@@ -38,75 +42,112 @@ const Controls: React.FC<{
       bottom={isOpen ? 0 : undefined}
       left={0}
       right={0}
-      pt={isOpen ? 4 : undefined}
+      pt={isOpen ? 8 : undefined}
       background="rgba(0,0,0,0.6)"
-      onClick={() => {
+      onClick={(e) => {
+        e.preventDefault();
         if (isOpen) {
-          onToggle();
+          setIsOpen(!isOpen);
           props.onToggle();
         }
       }}
     >
       {isOpen && (
-        <Stack p={3} color="white" fontWeight="500" fontSize="1.25rem">
+        <Stack
+          maxWidth="400px"
+          margin="10vh auto"
+          p={3}
+          color="white"
+          fontWeight="500"
+          fontSize="1.25rem"
+        >
           <Box as="label">
             Stroke Width ({state.strokeWidth})
-            <Input
-              type="range"
+            <Slider
+              // @ts-ignore
+              defaultValue={state.strokeWidth}
               min={1}
               max={24}
               step={1}
-              defaultValue={String(state.strokeWidth)}
-              onChange={(x: React.ChangeEvent<any>) => {
-                const strokeWidth = Number(x.target.value);
+              onChange={(strokeWidth) => {
                 setState({ ...state, strokeWidth });
                 props.onStrokeWidthChange(strokeWidth);
               }}
-            />
+              width="100%"
+            >
+              <SliderTrack bg="red.100" />
+              <SliderFilledTrack bg="tomato" />
+              <SliderThumb size={6}>
+                <Box color="tomato" as={MdGraphicEq} />
+              </SliderThumb>
+            </Slider>
           </Box>
           <Box as="label">
             Symmetry ({state.symmetry})
-            <Input
-              type="range"
+            <Slider
+              // @ts-ignore
+              defaultValue={state.symmetry}
               min={2}
               step={2}
               max={48}
-              defaultValue={String(state.symmetry)}
-              onChange={(x: ChangeEvent<any>) => {
-                const symmetry = Number(x.target.value);
+              onChange={(symmetry) => {
                 setState({ ...state, symmetry });
                 props.onSymmetryChange(symmetry);
               }}
-            />
+              color="blue"
+              width="100%"
+            >
+              <SliderTrack />
+              <SliderFilledTrack />
+              <SliderThumb size={6}>
+                <Box color="blue.500" as={MdGraphicEq} />
+              </SliderThumb>
+            </Slider>
           </Box>
-          <Stack isInline spacing={2}>
-            <Button variantColor="green" onClick={props.onSave}>
-              Save
-            </Button>
-            <Button variantColor="blue" onClick={props.onReset}>
-              Start over
-            </Button>
-          </Stack>
         </Stack>
       )}
-      <Button
-        borderRadius="50%"
-        position="absolute"
-        height={10}
-        width={10}
-        padding={0}
-        size="sm"
-        right={2}
-        top={2}
-        aria-label="toggle controls"
-        onClick={(e) => {
-          e.preventDefault();
-          props.onToggle();
-          onToggle();
-        }}
-      >
-        <FaCog fontSize="1.5rem" />
-      </Button>
+      <Box position="absolute" right={2} top={2}>
+        <Stack isInline spacing={2}>
+          <Button
+            borderRadius="50%"
+            height={10}
+            width={10}
+            padding={0}
+            variantColor="green"
+            onClick={props.onSave}
+          >
+            <FaSave fontSize="1.2rem" />
+          </Button>
+          <Button
+            borderRadius="50%"
+            height={10}
+            width={10}
+            padding={0}
+            variantColor="blue"
+            onClick={props.onReset}
+          >
+            <VscDebugRestart fontSize="1.25rem" />
+          </Button>
+          <Button
+            borderRadius="50%"
+            height={10}
+            width={10}
+            padding={0}
+            size="sm"
+            aria-label="toggle controls"
+            onClick={() => {
+              props.onToggle();
+              setIsOpen(!isOpen);
+            }}
+          >
+            {isOpen ? (
+              <VscChromeClose fontSize="1.25rem" />
+            ) : (
+              <FaCog fontSize="1.25rem" />
+            )}
+          </Button>
+        </Stack>
+      </Box>
     </Box>
   );
 };

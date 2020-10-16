@@ -1,2 +1,3 @@
 # kaleidoscope-drawboard
-Created with CodeSandbox
+
+Draw cool kaleidoscopic images
