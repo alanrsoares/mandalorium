@@ -1,6 +1,6 @@
 {
   "name": "kaleidoscope",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Draw beautiful kaleidoscope patterns with vibrant colors",
   "keywords": [],
   "main": "src/index.tsx",
