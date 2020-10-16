@@ -7,7 +7,7 @@ import {
   Input,
   Stack,
   ThemeProvider,
-  useDisclosure,
+  useDisclosure
 } from "@chakra-ui/core";
 import Sketch from "react-p5";
 import IP5 from "p5";
@@ -18,7 +18,7 @@ import "./styles.css";
 
 const DEFAULT_STATE = {
   strokeWidth: Number(localStorage.getItem("strokeWidth") || 2),
-  symmetry: Number(localStorage.getItem("symmetry") || 12),
+  symmetry: Number(localStorage.getItem("symmetry") || 12)
 };
 
 const Controls: React.FC<{
