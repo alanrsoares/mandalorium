@@ -1,0 +1,14 @@
+{
+    "include": [
+        "./src/*"
+    ],
+    "compilerOptions": {
+        "lib": [
+            "dom",
+            "es2015"
+        ],
+        "jsx": "react",
+        "target": "ES5",
+        "esModuleInterop": true
+    }
+}
