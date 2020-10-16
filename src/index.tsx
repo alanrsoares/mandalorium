@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { ChangeEvent, Component, useState } from "react";
 import { render } from "react-dom";
 import {
   Box,
@@ -7,7 +7,7 @@ import {
   Input,
   Stack,
   ThemeProvider,
-  useDisclosure
+  useDisclosure,
 } from "@chakra-ui/core";
 import Sketch from "react-p5";
 import IP5 from "p5";
@@ -17,8 +17,8 @@ import { getRainbowHSL } from "./colors";
 import "./styles.css";
 
 const DEFAULT_STATE = {
-  strokeWidth: Number(localStorage.getItem("strokeWidth") ?? 2),
-  symmetry: Number(localStorage.getItem("symmetry") ?? 12)
+  strokeWidth: Number(localStorage.getItem("strokeWidth") || 2),
+  symmetry: Number(localStorage.getItem("symmetry") || 12),
 };
 
 const Controls: React.FC<{
@@ -57,7 +57,7 @@ const Controls: React.FC<{
               max={24}
               step={1}
               defaultValue={String(state.strokeWidth)}
-              onChange={(x) => {
+              onChange={(x: React.ChangeEvent<any>) => {
                 const strokeWidth = Number(x.target.value);
                 setState({ ...state, strokeWidth });
                 props.onStrokeWidthChange(strokeWidth);
@@ -72,7 +72,7 @@ const Controls: React.FC<{
               step={2}
               max={48}
               defaultValue={String(state.symmetry)}
-              onChange={(x) => {
+              onChange={(x: ChangeEvent<any>) => {
                 const symmetry = Number(x.target.value);
                 setState({ ...state, symmetry });
                 props.onSymmetryChange(symmetry);
@@ -117,7 +117,7 @@ class App extends Component {
 
   colorRange = 0;
   drawingLocked = false;
-  p5: IP5 = undefined;
+  p5?: IP5 = undefined;
 
   get angle() {
     return 360 / this.symmetry;
