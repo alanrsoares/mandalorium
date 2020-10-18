@@ -181,7 +181,10 @@ class App extends Component {
 
     p5.translate(width / 2, height / 2);
 
-    if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
+    const isInCanvasBounds =
+      mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height;
+
+    if (isInCanvasBounds) {
       const mx = mouseX - width / 2;
       const my = mouseY - height / 2;
       const pmx = pmouseX - width / 2;
