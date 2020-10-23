@@ -1,24 +1,15 @@
 import React, { Component, useState } from "react";
 import { render } from "react-dom";
-import {
-  Box,
-  Button,
-  CSSReset,
-  Slider,
-  SliderFilledTrack,
-  SliderThumb,
-  SliderTrack,
-  Stack,
-  ChakraProvider,
-} from "@chakra-ui/core";
+import { Box, Button, CSSReset, Stack, ChakraProvider } from "@chakra-ui/core";
 import Sketch from "react-p5";
 import IP5 from "p5";
 import { FaCog, FaSave } from "react-icons/fa";
 import { VscChromeClose, VscDebugRestart } from "react-icons/vsc";
-import { MdGraphicEq } from "react-icons/md";
 
 import { getRainbowHSL } from "./colors";
 import "./styles.css";
+
+import Slider from "./components/Slider";
 
 const DEFAULT_STATE = {
   strokeWidth: Number(localStorage.getItem("strokeWidth") || 2),
@@ -61,49 +52,30 @@ const Controls: React.FC<{
           fontWeight="500"
           fontSize="1.25rem"
         >
-          <Box as="label">
-            Stroke Width ({state.strokeWidth})
-            <Slider
-              // @ts-ignore
-              defaultValue={state.strokeWidth}
-              min={1}
-              max={24}
-              step={1}
-              onChange={(strokeWidth) => {
-                setState({ ...state, strokeWidth });
-                props.onStrokeWidthChange(strokeWidth);
-              }}
-              width="100%"
-            >
-              <SliderTrack bg="red.100" />
-              <SliderFilledTrack bg="tomato" />
-              <SliderThumb boxSize={6}>
-                <Box color="tomato" as={MdGraphicEq} />
-              </SliderThumb>
-            </Slider>
-          </Box>
-          <Box as="label">
-            Symmetry ({state.symmetry})
-            <Slider
-              // @ts-ignore
-              defaultValue={state.symmetry}
-              min={2}
-              step={2}
-              max={48}
-              onChange={(symmetry) => {
-                setState({ ...state, symmetry });
-                props.onSymmetryChange(symmetry);
-              }}
-              color="blue"
-              width="100%"
-            >
-              <SliderTrack />
-              <SliderFilledTrack />
-              <SliderThumb boxSize={6}>
-                <Box color="blue.500" as={MdGraphicEq} />
-              </SliderThumb>
-            </Slider>
-          </Box>
+          <Slider
+            label="Stroke Width"
+            color="tomato"
+            value={state.strokeWidth}
+            min={1}
+            max={24}
+            step={1}
+            onChange={(strokeWidth) => {
+              setState({ ...state, strokeWidth });
+              props.onStrokeWidthChange(strokeWidth);
+            }}
+          />
+          <Slider
+            label="Symmetry"
+            color="blue.500"
+            value={state.symmetry}
+            min={2}
+            step={2}
+            max={48}
+            onChange={(symmetry) => {
+              setState({ ...state, symmetry });
+              props.onSymmetryChange(symmetry);
+            }}
+          />
         </Stack>
       )}
       <Box position="absolute" right={2} top={2}>
