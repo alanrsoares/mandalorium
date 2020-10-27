@@ -19,13 +19,15 @@ export default class App extends Component {
     return 360 / this.symmetry;
   }
 
-  setup = (p5: IP5) => {
+  setup = (p5: IP5, parentRef: Element) => {
     this.p5 = p5;
-    p5.createCanvas(p5.windowWidth, p5.windowHeight);
+
+    p5.createCanvas(p5.windowWidth, p5.windowHeight).parent(parentRef);
     p5.angleMode(p5.DEGREES);
     p5.background(0);
     p5.colorMode(p5.HSL);
     p5.smooth();
+    p5.cursor("crosshair");
 
     this.colorRange = (p5.width * p5.height) / (p5.width + p5.height);
   };
