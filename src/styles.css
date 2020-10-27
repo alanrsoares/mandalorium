@@ -1,3 +1,20 @@
 body {
   overscroll-behavior: none;
 }
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0.2;
+    filter: saturate(0);
+    transform: rotate(0);
+  }
+  50% {
+    opacity: 1;
+    filter: saturate(1);
+  }
+  100% {
+    opacity: 0;
+    filter: saturate(0);
+    transform: rotate(360deg);
+  }
+}

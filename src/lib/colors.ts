@@ -39,10 +39,10 @@ class HSLGenerator {
   }
 }
 
-const hslGenerator = new HSLGenerator();
+const generator = new HSLGenerator();
 
 export const getRainbowHSL = (y: number, x: number, hueLength?: number) => {
   return hueLength
-    ? hslGenerator.withHue(hueLength).getColor(y, x)
-    : hslGenerator.getColor(y, x);
+    ? generator.withHue(hueLength).getColor(y, x)
+    : generator.getColor(y, x);
 };
