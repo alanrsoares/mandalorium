@@ -38,4 +38,5 @@ const Splash: React.FC = () => {
     </Flex>
   );
 };
+
 export default Splash;
