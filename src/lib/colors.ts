@@ -11,7 +11,7 @@ class HSLGenerator {
     this.cache = {};
   }
 
-  public withHue(hueLength: number) {
+  withHue(hueLength: number) {
     const nextHueIncrement = 360 / Math.sqrt(hueLength ** 2 * 2);
 
     if (nextHueIncrement !== this.hueIncrement) {
@@ -23,7 +23,7 @@ class HSLGenerator {
     return this;
   }
 
-  public getColor(y: number, x: number) {
+  getColor(y: number, x: number) {
     const cacheKey = [y, x].join("-");
 
     if (cacheKey in this.cache) {
