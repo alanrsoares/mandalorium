@@ -179,7 +179,7 @@ export default class App extends Component<{}, State> {
           onReset={() => {
             this.p5?.background(0);
           }}
-          onSave={() => {
+          onSavePicture={() => {
             this.p5?.saveCanvas("kaleidoscopic-wunderbar", "png");
           }}
         />

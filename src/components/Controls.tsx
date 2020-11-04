@@ -1,12 +1,6 @@
 import React, { useState } from "react";
-import {
-  FaCamera,
-  FaCog,
-  FaPause,
-  FaPlay,
-  FaStop,
-  FaVideo,
-} from "react-icons/fa";
+import { FaCamera, FaCog, FaPause, FaPlay, FaStop } from "react-icons/fa";
+import { TiMediaRecord } from "react-icons/ti";
 import { VscChromeClose, VscDebugRestart } from "react-icons/vsc";
 import { Box, Button, Stack, SystemCSSProperties } from "@chakra-ui/core";
 
@@ -24,7 +18,7 @@ interface Props {
   onToggleRecordMode(): void;
   onTogglePlayMode(): void;
   onReset(): void;
-  onSave(): void;
+  onSavePicture(): void;
   mode: "recording" | "drawing" | "locked" | "playing";
 }
 
@@ -98,53 +92,7 @@ const Controls: React.FC<Props> = (props) => {
         </Stack>
       )}
       <Box position="absolute" right={2} top={2}>
-        <Stack isInline spacing={2}>
-          <Button
-            sx={styles.roundBtn}
-            color="green"
-            onClick={(e) => {
-              e.stopPropagation();
-              props.onToggleRecordMode();
-            }}
-          >
-            {props.mode === "recording" ? (
-              <FaStop color="red" fontSize="1.2rem" />
-            ) : (
-              <FaVideo fontSize="1.2rem" />
-            )}
-          </Button>
-          <Button
-            sx={styles.roundBtn}
-            onClick={(e) => {
-              e.stopPropagation();
-              props.onTogglePlayMode();
-            }}
-          >
-            {props.mode === "playing" ? (
-              <FaPause color="red" fontSize="1.2rem" />
-            ) : (
-              <FaPlay fontSize="1.2rem" />
-            )}
-          </Button>
-          <Button
-            sx={styles.roundBtn}
-            onClick={(e) => {
-              e.stopPropagation();
-              props.onSave();
-            }}
-          >
-            <FaCamera fontSize="1.2rem" />
-          </Button>
-          <Button
-            sx={styles.roundBtn}
-            color="blue"
-            onClick={(e) => {
-              e.stopPropagation();
-              props.onReset();
-            }}
-          >
-            <VscDebugRestart fontSize="1.25rem" />
-          </Button>
+        <Stack spacing={2}>
           <Button
             sx={styles.roundBtn}
             size="sm"
@@ -158,6 +106,48 @@ const Controls: React.FC<Props> = (props) => {
               <VscChromeClose fontSize="1.25rem" />
             ) : (
               <FaCog fontSize="1.25rem" />
+            )}
+          </Button>
+          <Button
+            sx={styles.roundBtn}
+            color="blue"
+            onClick={(e) => {
+              e.stopPropagation();
+              props.onReset();
+            }}
+          >
+            <VscDebugRestart fontSize="1.25rem" />
+          </Button>
+          <Button
+            sx={styles.roundBtn}
+            onClick={(e) => {
+              e.stopPropagation();
+              props.onSavePicture();
+            }}
+          >
+            <FaCamera fontSize="1.2rem" />
+          </Button>
+          <Button
+            sx={styles.roundBtn}
+            onClick={(e) => {
+              e.stopPropagation();
+              props.onTogglePlayMode();
+            }}
+          >
+            {props.mode === "playing" ? <FaPause color="red" /> : <FaPlay />}
+          </Button>
+          <Button
+            sx={styles.roundBtn}
+            color="green"
+            onClick={(e) => {
+              e.stopPropagation();
+              props.onToggleRecordMode();
+            }}
+          >
+            {props.mode === "recording" ? (
+              <FaStop color="red" />
+            ) : (
+              <TiMediaRecord fontSize="1.75rem" />
             )}
           </Button>
         </Stack>
