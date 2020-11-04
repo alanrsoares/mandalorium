@@ -6,14 +6,32 @@ import { getRainbowHSL } from "./lib/colors";
 import Controls, { DEFAULT_STATE } from "./components/Controls";
 
 import "./styles.css";
+import { FaWizardsOfTheCoast } from "react-icons/fa";
+import { Flex } from "@chakra-ui/core";
 
-export default class App extends Component {
+interface State {
+  mode: "locked" | "drawing" | "recording" | "playing";
+}
+
+interface Segment {
+  deltas: Pick<IP5, "mouseX" | "mouseY" | "pmouseX" | "pmouseY">;
+  strokeWeight: number;
+  angle: number;
+  symmetry: number;
+  color: string;
+}
+
+export default class App extends Component<{}, State> {
   symmetry = DEFAULT_STATE.symmetry;
   strokeWeight = DEFAULT_STATE.strokeWeight;
 
   colorRange = 0;
-  drawingLocked = false;
   p5: IP5 | undefined = undefined;
+  segments: Segment[] = [];
+
+  state: State = {
+    mode: "drawing",
+  };
 
   get angle() {
     return 360 / this.symmetry;
@@ -32,8 +50,23 @@ export default class App extends Component {
     this.colorRange = (p5.width * p5.height) / (p5.width + p5.height);
   };
 
+  drawSegment = (segment: Segment, p5: IP5) => {
+    const { deltas } = segment;
+
+    for (let i = 0; i < segment.symmetry; i++) {
+      p5.rotate(segment.angle);
+      p5.stroke(segment.color);
+      p5.strokeWeight(segment.strokeWeight);
+      p5.line(deltas.mouseX, deltas.mouseY, deltas.pmouseX, deltas.pmouseY);
+      p5.push();
+      p5.scale(1, -1);
+      p5.line(deltas.mouseX, deltas.mouseY, deltas.pmouseX, deltas.pmouseY);
+      p5.pop();
+    }
+  };
+
   draw = (p5: IP5) => {
-    if (this.drawingLocked) return;
+    if (this.state.mode === "locked") return;
 
     const { width, height, mouseX, mouseY, pmouseX, pmouseY } = p5;
 
@@ -45,34 +78,63 @@ export default class App extends Component {
       mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height;
 
     if (isInCanvasBounds) {
-      // distance from current mouse position to canvas's center
-      const mx = mouseX - center.x;
-      const my = mouseY - center.y;
-      // distance from previous mouse position to canvas's center
-      const pmx = pmouseX - center.x;
-      const pmy = pmouseY - center.y;
+      const deltas = {
+        // distance from current mouse position to canvas's center
+        mouseX: mouseX - center.x,
+        mouseY: mouseY - center.y,
+        // distance from previous mouse position to canvas's center
+        pmouseX: pmouseX - center.x,
+        pmouseY: pmouseY - center.y,
+      };
 
       if (p5.mouseIsPressed) {
-        const color = getRainbowHSL(mouseY, mouseX, this.colorRange * 2);
+        const segment: Segment = {
+          deltas,
+          strokeWeight: this.strokeWeight,
+          angle: this.angle,
+          symmetry: this.symmetry,
+          color: getRainbowHSL(mouseY, mouseX, this.colorRange * 2),
+        };
 
-        for (let i = 0; i < this.symmetry; i++) {
-          p5.rotate(this.angle);
-          p5.stroke(color);
-          p5.strokeWeight(this.strokeWeight);
-          p5.line(mx, my, pmx, pmy);
-          p5.push();
-          p5.scale(1, -1);
-          p5.line(mx, my, pmx, pmy);
-          p5.pop();
+        if (this.state.mode === "recording") {
+          this.segments.push(segment);
         }
+
+        this.drawSegment(segment, p5);
       }
     }
+  };
+
+  frame = (segments: Segment[], p5: IP5) => {
+    if (segments.length) {
+      if (this.state.mode === "playing") {
+        const [hd, ...tl] = segments;
+        this.drawSegment(hd, p5);
+
+        setTimeout(() => {
+          this.frame(tl, p5);
+        }, 16);
+      }
+    } else {
+      this.setState({ mode: "drawing" });
+    }
+  };
+
+  playRecording = () => {
+    if (!this.p5) {
+      return;
+    }
+
+    this.frame(this.segments, this.p5);
+
+    this.p5.background(0);
   };
 
   render() {
     return (
       <>
         <Controls
+          mode={this.state.mode}
           onStrokeWeightChange={(x) => {
             localStorage.setItem("strokeWeight", String(x));
             this.strokeWeight = x;
@@ -81,8 +143,32 @@ export default class App extends Component {
             localStorage.setItem("symmetry", String(x));
             this.symmetry = x;
           }}
-          onToggle={() => {
-            this.drawingLocked = !this.drawingLocked;
+          onToggleControls={() => {
+            if (this.state.mode !== "locked") {
+              this.setState({ mode: "locked" });
+            }
+          }}
+          onToggleRecordMode={() => {
+            switch (this.state.mode) {
+              case "recording":
+                this.setState({ mode: "drawing" });
+                break;
+              case "playing":
+                return;
+              default:
+                this.setState({ mode: "recording" });
+            }
+          }}
+          onTogglePlayMode={() => {
+            switch (this.state.mode) {
+              case "playing":
+                this.setState({ mode: "drawing" });
+                break;
+              case "recording":
+                return;
+              default:
+                this.setState({ mode: "playing" }, this.playRecording);
+            }
           }}
           onReset={() => {
             this.p5?.background(0);
@@ -91,7 +177,9 @@ export default class App extends Component {
             this.p5?.saveCanvas("kaleidoscopic-wunderbar", "png");
           }}
         />
-        <Sketch setup={this.setup} draw={this.draw} />
+        <Flex justify="center" align="center" bg="black">
+          <Sketch setup={this.setup} draw={this.draw} />
+        </Flex>
       </>
     );
   }

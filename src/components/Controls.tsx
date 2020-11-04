@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { FaCog, FaSave } from "react-icons/fa";
+import {
+  FaCamera,
+  FaCog,
+  FaImage,
+  FaPause,
+  FaPlay,
+  FaStop,
+  FaVideo,
+} from "react-icons/fa";
 import { VscChromeClose, VscDebugRestart } from "react-icons/vsc";
 import { Box, Button, Stack, SystemCSSProperties } from "@chakra-ui/core";
 
@@ -13,9 +21,12 @@ export const DEFAULT_STATE = {
 interface Props {
   onSymmetryChange(value: number): void;
   onStrokeWeightChange(value: number): void;
-  onToggle(): void;
+  onToggleControls(): void;
+  onToggleRecordMode(): void;
+  onTogglePlayMode(): void;
   onReset(): void;
   onSave(): void;
+  mode: "recording" | "drawing" | "locked" | "playing";
 }
 
 const styles: Record<string, SystemCSSProperties> = {
@@ -55,7 +66,7 @@ const Controls: React.FC<Props> = (props) => {
         e.preventDefault();
         if (isOpen) {
           setIsOpen(!isOpen);
-          props.onToggle();
+          props.onToggleControls();
         }
       }}
     >
@@ -89,10 +100,50 @@ const Controls: React.FC<Props> = (props) => {
       )}
       <Box position="absolute" right={2} top={2}>
         <Stack isInline spacing={2}>
-          <Button sx={styles.roundBtn} color="green" onClick={props.onSave}>
-            <FaSave fontSize="1.2rem" />
+          <Button
+            sx={styles.roundBtn}
+            color="green"
+            onClick={(e) => {
+              e.stopPropagation();
+              props.onToggleRecordMode();
+            }}
+          >
+            {props.mode === "recording" ? (
+              <FaStop color="red" fontSize="1.2rem" />
+            ) : (
+              <FaVideo fontSize="1.2rem" />
+            )}
           </Button>
-          <Button sx={styles.roundBtn} color="blue" onClick={props.onReset}>
+          <Button
+            sx={styles.roundBtn}
+            onClick={(e) => {
+              e.stopPropagation();
+              props.onTogglePlayMode();
+            }}
+          >
+            {props.mode === "playing" ? (
+              <FaPause color="red" fontSize="1.2rem" />
+            ) : (
+              <FaPlay fontSize="1.2rem" />
+            )}
+          </Button>
+          <Button
+            sx={styles.roundBtn}
+            onClick={(e) => {
+              e.stopPropagation();
+              props.onSave();
+            }}
+          >
+            <FaCamera fontSize="1.2rem" />
+          </Button>
+          <Button
+            sx={styles.roundBtn}
+            color="blue"
+            onClick={(e) => {
+              e.stopPropagation();
+              props.onReset();
+            }}
+          >
             <VscDebugRestart fontSize="1.25rem" />
           </Button>
           <Button
@@ -100,7 +151,7 @@ const Controls: React.FC<Props> = (props) => {
             size="sm"
             aria-label="toggle controls"
             onClick={() => {
-              props.onToggle();
+              props.onToggleControls();
               setIsOpen(!isOpen);
             }}
           >

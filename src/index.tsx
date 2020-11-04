@@ -4,10 +4,10 @@ import { CSSReset, ChakraProvider } from "@chakra-ui/core";
 
 import { ReactComponent as Foo } from "assets/chakra_1.svg";
 
-import "./styles.css";
-
 import ErrorBoundary from "components/ErrorBoundary";
 import Splash from "components/Splash";
+
+import "./styles.css";
 
 const App = React.lazy(() => import("./App"));
 
