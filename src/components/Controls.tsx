@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {
   FaCamera,
   FaCog,
-  FaImage,
   FaPause,
   FaPlay,
   FaStop,

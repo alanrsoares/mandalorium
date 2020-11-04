@@ -28,6 +28,7 @@ export default class App extends Component<{}, State> {
   colorRange = 0;
   p5: IP5 | undefined = undefined;
   segments: Segment[] = [];
+  cue: number = 0;
 
   state: State = {
     mode: "drawing",
@@ -109,6 +110,7 @@ export default class App extends Component<{}, State> {
     if (segments.length) {
       if (this.state.mode === "playing") {
         const [hd, ...tl] = segments;
+        this.cue++;
         this.drawSegment(hd, p5);
 
         setTimeout(() => {
@@ -116,6 +118,7 @@ export default class App extends Component<{}, State> {
         }, 16);
       }
     } else {
+      this.cue = 0;
       this.setState({ mode: "drawing" });
     }
   };
@@ -125,9 +128,12 @@ export default class App extends Component<{}, State> {
       return;
     }
 
-    this.frame(this.segments, this.p5);
+    if (this.cue === 0) {
+      // black canvas
+      this.p5.background(0);
+    }
 
-    this.p5.background(0);
+    this.frame(this.segments.slice(this.cue), this.p5);
   };
 
   render() {
